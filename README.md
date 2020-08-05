@@ -127,7 +127,7 @@
 ![image](https://user-images.githubusercontent.com/66579932/89254494-30a8f000-d65a-11ea-9503-f661da2926f4.png)
 #
 ![image](https://user-images.githubusercontent.com/66579932/89254527-3f8fa280-d65a-11ea-9700-7d9da083af5d.png)
-##
+##1차완성본
 ![image](https://user-images.githubusercontent.com/66579932/89360711-4246d200-d704-11ea-96e9-fe838deea08c.png)
 ##
 ![image](https://user-images.githubusercontent.com/66579932/89360309-f8112100-d702-11ea-943f-0b2e21367cdc.png)
