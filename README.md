@@ -538,7 +538,7 @@ public class PolicyHandler{
 
 
 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 GCP를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 cloudbuild.yml 에 포함되었다.
-
+![image](https://user-images.githubusercontent.com/66579932/89374319-00c71e80-d726-11ea-8207-fb04a5969c68.png)
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
@@ -578,7 +578,7 @@ public class CartApplication {
 - 60초 동안 실시
 
 ```
-$ siege -c100 -t60S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"item": "chicken"}'
+$ siege -c3 -t30S -v --content-type "application/json" http POST http://a5e10f041e91a45ac9d806776373cc4c-979366128.us-east-2.elb.amazonaws.com:8080/mycart/2/menu/8/add
 
 ** SIEGE 4.0.5
 ** Preparing 100 concurrent users for battle.
