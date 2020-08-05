@@ -297,44 +297,113 @@ public interface PaymentService {
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
 
 
-결제가 이루어진 후에 상점시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 상점 시스템의 처리를 위하여 결제주문이 블로킹 되지 않아도록 처리한다.
+관리자가 메뉴를 갱신하면, 매장 메뉴가 변경되며 이를 비 동기식으로 처리하여 고객 주문이 블로킹 되지 않도록 처리한다.
  
-- 이를 위하여 결제이력에 기록을 남긴 후에 곧바로 결제승인이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 이를 위하여 메뉴갱신에 대한 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
-package fooddelivery;
+package doremi;
+
+import javax.persistence.*;
+import org.springframework.beans.BeanUtils;
+import java.util.List;
 
 @Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
+@Table(name="Menu_table")
+public class Menu {
 
- ...
-    @PrePersist
-    public void onPrePersist(){
-        결제승인됨 결제승인됨 = new 결제승인됨();
-        BeanUtils.copyProperties(this, 결제승인됨);
-        결제승인됨.publish();
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    private String menuName;
+    private String menuType;
+    private String description;
+    private Float price;
+
+    @PostPersist
+    public void onPostPersist(){
+        MenuRegistered menuRegistered = new MenuRegistered();
+        BeanUtils.copyProperties(this, menuRegistered);
+        menuRegistered.publishAfterCommit();
     }
 
-}
+    @PostRemove
+    public void onPostRemove(){
+        MenuDeleted menuDeleted = new MenuDeleted();
+        BeanUtils.copyProperties(this, menuDeleted);
+        menuDeleted.publishAfterCommit();
+    }
 ```
-- 상점 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 메뉴 갱신 이벤트에 대한 자신의 정책 처리하도록 PolicyHandler 를 구현한다:
 
 ```
-package fooddelivery;
+package doremi;
 
-...
+import doremi.config.kafka.KafkaProcessor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PolicyHandler{
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
 
-        if(결제승인됨.isMe()){
-            System.out.println("##### listener 주문정보받음 : " + 결제승인됨.toJson());
-            // 주문 정보를 받았으니, 요리를 슬슬 시작해야지..
-            
+    @Value("${doremi.storeId}")
+    private Long storeId;
+
+    private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+
+    public PolicyHandler(OrderRepository orderRepository, MenuRepository menuRepository) {
+        this.orderRepository = orderRepository;
+        this.menuRepository = menuRepository;
+    }
+
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void onStringEventListener(@Payload String eventString){
+
+    }
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverMenuRegistered_MenuRegisteredNotification(@Payload MenuRegistered menuRegistered){
+
+        if(menuRegistered.isMe()){
+            System.out.println("##### listener MenuRegisteredNotification : " + menuRegistered.toJson());
+
+            Menu newMenu = new Menu();
+            newMenu.setMenuId(menuRegistered.getId());
+            newMenu.setStoreId(storeId);
+            newMenu.setDescription(menuRegistered.getDescription());
+            newMenu.setMenuType(menuRegistered.getMenuType());
+            newMenu.setMenuName(menuRegistered.getMenuName());
+
+            newMenu.setMenuStatus(MenuStatus.REGISTERED);
+
+            menuRepository.save(newMenu);
+        }
+    }
+    @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverMenuDeleted_MenuDeletedNotification(@Payload MenuDeleted menuDeleted){
+
+        if(menuDeleted.isMe()){
+            System.out.println("##### listener MenuDeletedNotification : " + menuDeleted.toJson());
+        }
+    }
+
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverCartPaid_CreateOrder(@Payload CartPaid cartPaid){
+
+        if(cartPaid.isMe() && cartPaid.getCartId().equals(storeId)){
+            System.out.println("##### listener CreateOrder : " + cartPaid.toJson());
+
+            Order newOrder = new Order();
+            newOrder.setCartId(cartPaid.getCartId());
+            newOrder.setStoreId(storeId);
+            newOrder.setOrderStatus(OrderStatus.CREATED);
+            orderRepository.save(newOrder);
         }
     }
 
