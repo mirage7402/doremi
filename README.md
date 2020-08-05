@@ -293,7 +293,7 @@ http POST http://localhost:8088/myorder/delivery/1/complete
 
 ## 폴리글랏 퍼시스턴스 처리
 ```
-Admin,Cart,Store 서비스는 H2 적용
+Admin 은 HSQLDB, 나머지는 서비스는 H2 적용
 Payment는 HSQLDB 적용
 pom.xml dependency 추가
 <dependency>
