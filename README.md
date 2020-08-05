@@ -130,13 +130,13 @@
 #
 ![image](https://user-images.githubusercontent.com/66579932/89254557-58985380-d65a-11ea-9c10-c95955de7a73.png)
 #
-![image](https://user-images.githubusercontent.com/66579932/89254566-651cac00-d65a-11ea-89c6-e091097462c3.png)
+![image](https://user-images.githubusercontent.com/66579932/89360320-07906a00-d703-11ea-9c49-e90cc227abd4.png)
 
 
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
-![image](https://user-images.githubusercontent.com/66579932/89254581-6fd74100-d65a-11ea-9157-beec9defd486.png)
+![image](https://user-images.githubusercontent.com/66579932/89360334-16771c80-d703-11ea-9468-a305a4314bec.png)
 
 # 구현:
 
