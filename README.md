@@ -132,6 +132,10 @@
 ##
 ![image](https://user-images.githubusercontent.com/66579932/89360309-f8112100-d702-11ea-943f-0b2e21367cdc.png)
 
+## 비기능요구사항 검증
+![image](https://user-images.githubusercontent.com/66579932/89360711-4246d200-d704-11ea-96e9-fe838deea08c.png)
+
+
 #
 ![image](https://user-images.githubusercontent.com/66579932/89360320-07906a00-d703-11ea-9c49-e90cc227abd4.png)
 
