@@ -226,37 +226,56 @@ public interface CartRepository extends PagingAndSortingRepository<Cart, Long>{
 - 적용 후 REST API 의 테스트
 ```
 (Admin) 메뉴 추가
+
 http POST http://localhost:8088/menus menuName=pizza3 menuType=pizza description=pizzadesc price=150.0
+
 http GET http://localhost:8088/menus/1
 
 (Store Manager) 상점 관리자가 Store에서 메뉴 상태 확인 (StoreId :2002)
+
 http GET http://localhost:8088/stores/{{storeId}}/menus
+
 http GET http://localhost:8088/stores/2002/menus
 
 (Store Manager) 상점 관리자가 상품 Approve
+
 http POST http://localhost:8088/stores/{{storeId}}/menus/{{menuId}}/approve
+
 http POST http://localhost:8088/stores/2002/menus/1/approve
 
 (Member) 카트 생성
+
 http POST http://localhost:8088/mycart/{{storeId}}/create
+
 http POST http://localhost:8088/mycart/2002/create
 
 (Member) 카트에 메뉴 담기
+
 http POST http://localhost:8088/mycart/{{cartdId}}/menu/{menuId}/add
+
 http POST http://localhost:8088/mycart/1/menu/1/add
 
 (Member) 카트 최종 주문
+
 http POST http://localhost:8088/mycart/{{cartdId}}/order
+
 http POST http://localhost:8088/mycart/1/order
-(Admin) http GET http://localhost:8088/payments
+(Admin) 
+http GET http://localhost:8088/payments
 
-(StoreManager) 주문 접수 상태 확인 http GET http://localhost:8088/orders
+(StoreManager) 주문 접수 상태 확인 
+http GET http://localhost:8088/orders
 
-(StoreManager) 조리 시작 http POST http://localhost:8088/myorder/1/cooking/start
+(StoreManager) 조리 시작 
+http POST http://localhost:8088/myorder/1/cooking/start
 
-(StoreManager) 배달시작 시작 http POST http://localhost:8088/myorder/delivery/{{orderId}} http POST http://localhost:8088/myorder/delivery/1
+(StoreManager) 배달시작 시작 
+http POST http://localhost:8088/myorder/delivery/{{orderId}} 
+http POST http://localhost:8088/myorder/delivery/1
 
-(StoreManager) 배달 종료 http POST http://localhost:8088/myorder/delivery/{{orderId}}/complete http POST http://localhost:8088/myorder/delivery/1/complete
+(StoreManager) 배달 종료 
+http POST http://localhost:8088/myorder/delivery/{{orderId}}/complete 
+http POST http://localhost:8088/myorder/delivery/1/complete
 ```
 
 
