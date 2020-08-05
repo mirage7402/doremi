@@ -1,4 +1,14 @@
-![image](https://user-images.githubusercontent.com/66579932/89150924-ab123b00-d59a-11ea-9d61-ee0d840921a8.jpg)
+# 실습기록
+KAFKA
+- 토픽 생성
+kubectl -n kafka exec my-kafka-0 -- /usr/bin/kafka-topics --zookeeper my-kafka-zookeeper:2181 --topic ipTVShopProject --create --partitions 1 --replication-factor 1
+- 토픽 조회
+kubectl -n kafka exec my-kafka-0 -- /usr/bin/kafka-topics --zookeeper my-kafka-zookeeper:2181 --list
+- 이벤트 수신
+kubectl -n kafka exec -ti my-kafka-0 -- /usr/bin/kafka-console-consumer --bootstrap-server my-kafka:9092 --topic ipTVShopProject --from-beginning
+kubectl -n kafka exec -ti my-kafka-1 -- /usr/bin/kafka-console-consumer --bootstrap-server my-kafka:9092 --topic ipTVShopProject
+
+
 
 # (도레미 피자) Pizza매장 메뉴관리, 주문배송관리 서비스
 5조의 주제는 Pizza 메뉴관리 주문 배송 서비스 입니다. 
