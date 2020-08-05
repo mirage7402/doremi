@@ -592,18 +592,8 @@ The server is now under siege...
 - Retry 의 설정 (istio)
 - Availability 가 높아진 것을 확인 (siege)
 
-### 오토스케일 아웃
-앞서 CB 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. 
-
-
-- Admin Menu call에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 
-```
-kubectl autoscale deploy t5-admin --min=1 --max=10 --cpu-percent=15
-```
-- CB 에서 했던 방식대로 워크로드를 2분 동안 걸어준다.
-```
-siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"item": "chicken"}'
-```
+### 오토스케일 
+![image](https://user-images.githubusercontent.com/66579932/89379690-36253980-d731-11ea-86a5-10c01483b8bf.png)
 - 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다:
 ```
 kubectl get deploy t5-admin -w
