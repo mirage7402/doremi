@@ -631,7 +631,7 @@ Concurrency:		       96.02
 ## 무정지 재배포
 
 * 
-![image](https://user-images.githubusercontent.com/66579932/89360711-4246d200-d704-11ea-96e9-fe838deea08c.png)
+![image](https://user-images.githubusercontent.com/66579932/89377259-61f1f080-d72c-11ea-8f92-cde529f6618d.png)
 
 ```
 Transactions:		        3078 hits
