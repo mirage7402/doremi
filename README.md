@@ -576,7 +576,7 @@ public class CartApplication {
 * 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인:
 - 동시사용자 100명
 - 60초 동안 실시
-
+![image](https://user-images.githubusercontent.com/66579932/89378015-e8f39880-d72d-11ea-8755-3cbe624f2fea.png)
 ```
 $ siege -c3 -t30S -v --content-type "application/json" http POST http://a5e10f041e91a45ac9d806776373cc4c-979366128.us-east-2.elb.amazonaws.com:8080/mycart/2/menu/8/add
 
