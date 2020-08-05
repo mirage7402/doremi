@@ -1,6 +1,6 @@
 ![image](https://user-images.githubusercontent.com/66579932/89150924-ab123b00-d59a-11ea-9d61-ee0d840921a8.jpg)
 
-# Pizza 메뉴관리, 주문배송관리 서비스
+# (도레미 피자) Pizza매장 메뉴관리, 주문배송관리 서비스
 5조의 주제는 Pizza 메뉴관리 주문 배송 서비스 입니다. 
 
 # Table of contents
@@ -26,7 +26,7 @@
 
 기능적 요구사항
 1. 상품 Manager가 매장별 판매할 상품을 선정한다. 
-2. 해당 매장에 Menu 변동에 대한 confir을 요청한다.
+2. 해당 매장에 Menu 변동에 대한 confirm을 요청한다.
 3. Confirm된 Menu는 해당 매장에서 선태 가능한 Menu가 된다.
 4. 고객이 주문할 매장을 선택한다.
 5. 매장 선택 시점에 매장주문카트가 생성된다.
@@ -39,8 +39,8 @@
 비기능적 요구사항
 1. 트랜잭션:결제가 되어야만 매장에서 주문을 받는다. Sync 호출
 2. 장애격리: Menu처리 승인에 상관없이 Menu수정 요청을 할 수 있다. Async (event-driven), Eventual Consistency
-3. 주문이 밀리면 Menu승인 요청을 잠시후에 하도록 유도한다. Circuit breaker
-4. 성능:고객 주문의 배송상태를 확인할 수 있어야 한다 CQRS
+3. Menu에 담을때 메뉴정보 주는 관리자 서비스가 바쁘면 Cart담기 보류 (Circuit breaker Test용 요구)
+4. 성능:어드민 매뉴 관리는 별도 DB (CQRS)
 
 # 체크포인트
 
