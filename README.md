@@ -260,7 +260,11 @@ http POST http://localhost:8088/mycart/1/order
 ```
 
 
-## 폴리글랏 퍼시스턴스
+```
+
+
+
+## 폴리글랏 퍼시스턴스 처리
 Admin,Cart,Store 서비스는 H2 적용
 Payment는 HSQLDB 적용
 pom.xml dependency 추가
@@ -270,66 +274,23 @@ pom.xml dependency 추가
     <version>2.4.0</version>
     <scope>runtime</scope>
 </dependency>
-```
 
 
 
 ## 동기식 호출 과 Fallback 처리
-
 분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
 
-- 결제서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
-
 ```
-# (app) 결제이력Service.java
+# 주문에 대한 결제 PaymentService.java
 
-package fooddelivery.external;
-
-@FeignClient(name="pay", url="http://localhost:8082")//, fallback = 결제이력ServiceFallback.class)
-public interface 결제이력Service {
-
-    @RequestMapping(method= RequestMethod.POST, path="/결제이력s")
-    public void 결제(@RequestBody 결제이력 pay);
-
+@FeignClient(name = "Payment", url = "http://localhost:8088")
+public interface PaymentService {
+    @RequestMapping(method = RequestMethod.POST, path = "/payments")
+    // todo HttpResponse Code 상태로 처리
+    void pay(@RequestBody Payment payment);
 }
-```
-
-- 주문을 받은 직후(@PostPersist) 결제를 요청하도록 처리
-```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-    }
-```
-
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
-
 
 ```
-# 결제 (pay) 서비스를 잠시 내려놓음 (ctrl+c)
-
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Fail
-http localhost:8081/orders item=피자 storeId=2   #Fail
-
-#결제서비스 재기동
-cd 결제
-mvn spring-boot:run
-
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
-```
-
-- 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
-
 
 
 
