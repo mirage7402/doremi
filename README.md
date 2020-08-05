@@ -168,59 +168,67 @@ mvn spring-boot:run
 
 ## DDD 의 적용
 
-- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 pay 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다. 하지만, 일부 구현에 있어서 영문이 아닌 경우는 실행이 불가능한 경우가 있기 때문에 계속 사용할 방법은 아닌것 같다. (Maven pom.xml, Kafka의 topic id, FeignClient 의 서비스 id 등은 한글로 식별자를 사용하는 경우 오류가 발생하는 것을 확인하였다)
+- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: Order, AdminMenu, StoreMenu, Cart
 
 ```
-package fooddelivery;
-
+package doremi;
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
 
 @Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
-
+@Table(name="Order_table")
+public class Order {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
-    private String orderId;
-    private Double 금액;
+    private Long orderId;
+    private Long storeId;
+    private Long cartId;
+    private OrderStatus orderStatus;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
-    public Double get금액() {
-        return 금액;
+    public Long getStoreId() {
+        return storeId;
     }
-
-    public void set금액(Double 금액) {
-        this.금액 = 금액;
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
     }
-
+    public Long getCartId() {
+        return cartId;
+    }
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
+    }
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }
 
 ```
-- Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
+- Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 데이터 접근 어뎁터 자동생성 다양한 데이터소스 유형(H2DB, HSQLDB) 에 대한 별도의 처리가 없도록 함.\위하여 Spring Data REST 의 RestRepository 를 적용하였다
 ```
-package fooddelivery;
+package doremi;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface 결제이력Repository extends PagingAndSortingRepository<결제이력, Long>{
-}
-```
+public interface CartRepository extends PagingAndSortingRepository<Cart, Long>{
+    Cart findByCartId(Long cartId);
+}```
+
+<dependency>
+    <groupId>org.hsqldb</groupId>
+    <artifactId>hsqldb</artifactId>
+    <version>2.4.0</version>
+    <scope>runtime</scope>
+</dependency>
 - 적용 후 REST API 의 테스트
 ```
 # app 서비스의 주문처리
