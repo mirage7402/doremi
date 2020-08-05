@@ -260,21 +260,29 @@ http POST http://localhost:8088/mycart/1/menu/1/add
 http POST http://localhost:8088/mycart/{{cartdId}}/order
 
 http POST http://localhost:8088/mycart/1/order
+
 (Admin) 
+
 http GET http://localhost:8088/payments
 
 (StoreManager) 주문 접수 상태 확인 
+
 http GET http://localhost:8088/orders
 
 (StoreManager) 조리 시작 
+
 http POST http://localhost:8088/myorder/1/cooking/start
 
 (StoreManager) 배달시작 시작 
+
 http POST http://localhost:8088/myorder/delivery/{{orderId}} 
+
 http POST http://localhost:8088/myorder/delivery/1
 
 (StoreManager) 배달 종료 
+
 http POST http://localhost:8088/myorder/delivery/{{orderId}}/complete 
+
 http POST http://localhost:8088/myorder/delivery/1/complete
 ```
 
