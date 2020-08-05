@@ -279,16 +279,109 @@ pom.xml dependency 추가
 
 ## 동기식 호출 과 Fallback 처리
 분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
+테스트를 위하여 Cart에서 상품 price 가져오는 부분을 동기식 호출, 서킷브레이킹, fallback 처리 하였다 (아래 소스의 @HystrixCommand(fallbackMethod = "fallbackHello") 참고)
 
 ```
-# 주문에 대한 결제 PaymentService.java
+# CartController.java
+package doremi;
 
-@FeignClient(name = "Payment", url = "http://localhost:8088")
-public interface PaymentService {
-    @RequestMapping(method = RequestMethod.POST, path = "/payments")
-    // todo HttpResponse Code 상태로 처리
-    void pay(@RequestBody Payment payment);
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import doremi.external.StoreInterface;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/mycart")
+public class CartController {
+
+    private final CartRepository cartRepository;
+
+    public CartController(CartRepository cartRepository) {
+        this.cartRepository = cartRepository;
+    }
+
+    @RequestMapping(value = "/{storeId}/create",
+            method = RequestMethod.POST,
+            produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Cart> selectStore(@PathVariable("storeId") Long storeId) {
+
+        System.out.println("##### /cart/selectStore  called #####");
+
+        if(storeId != null) {
+            Cart newCart = new Cart();
+            newCart.setStoreId(storeId);
+            cartRepository.save(newCart);
+
+            return new ResponseEntity<>(newCart, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private ResponseEntity<Cart> fallbackHello(Long cartId, Long menuId) {
+        Cart blankCart = new Cart();
+        blankCart.setCartId(cartId);
+        blankCart.setCartStatus(CartStatus.BLANK);
+
+        System.out.println("Hello, Fallback. cartId : " + cartId + "  menuId : " + menuId);
+        return new ResponseEntity<>(blankCart, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{cartId}/menu/{menuId}/add",
+            method = RequestMethod.POST,
+            produces = "application/json;charset=UTF-8")
+    @HystrixCommand(fallbackMethod = "fallbackHello")
+    public ResponseEntity<Cart> addMenu(@PathVariable("cartId") Long cartId, @PathVariable("menuId") Long menuId) {
+        System.out.println("##### /cart/addMenu  called #####");
+
+        Cart foundCart = cartRepository.findByCartId(cartId);
+
+        Menu foundMenu = CartApplication.applicationContext.getBean(StoreInterface.class).getMenuPrice(menuId);
+        try {
+            long start = System.currentTimeMillis();
+            Thread.currentThread().sleep((long) (2500 + Math.random() * 600));
+            System.out.println("Sleep time in ms = "+(System.currentTimeMillis()-start));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (foundCart != null && foundMenu.getPrice()> 0) {
+            foundCart.setMenuId(menuId);
+            foundCart.setCartStatus(CartStatus.MENUADDED);
+            foundCart.setPrice(foundMenu.getPrice());
+
+            cartRepository.save(foundCart);
+
+            return new ResponseEntity<>(foundCart, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(value = "/{cartId}/order",
+            method = RequestMethod.POST,
+            produces = "application/json;charset=UTF-8")
+    public ResponseEntity<Cart> placeOrder(@PathVariable("cartId") Long cartId)
+            throws Exception {
+        System.out.println("##### /cart/placeOrder  called #####");
+
+        Cart foundCart = cartRepository.findByCartId(cartId);
+        if (foundCart != null) {
+            foundCart.setCartStatus(CartStatus.ORDERED);
+            cartRepository.save(foundCart);
+
+            return new ResponseEntity<>(foundCart, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
+
 
 ```
 
