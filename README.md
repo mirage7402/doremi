@@ -584,128 +584,6 @@ $ siege -c3 -t30S -v --content-type "application/json" http POST http://a5e10f04
 ** Preparing 100 concurrent users for battle.
 The server is now under siege...
 
-HTTP/1.1 201     0.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.73 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.75 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.77 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.97 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.81 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.87 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.12 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.16 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.17 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.26 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.25 secs:     207 bytes ==> POST http://localhost:8081/orders
-
-* 요청이 과도하여 CB를 동작함 요청을 차단
-
-HTTP/1.1 500     1.29 secs:     248 bytes ==> POST http://localhost:8081/orders   
-HTTP/1.1 500     1.24 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     1.23 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     1.42 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     2.08 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.29 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     1.24 secs:     248 bytes ==> POST http://localhost:8081/orders
-
-* 요청을 어느정도 돌려보내고나니, 기존에 밀린 일들이 처리되었고, 회로를 닫아 요청을 다시 받기 시작
-
-HTTP/1.1 201     1.46 secs:     207 bytes ==> POST http://localhost:8081/orders  
-HTTP/1.1 201     1.33 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.36 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.63 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.65 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.69 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.71 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.71 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.74 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.76 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     1.79 secs:     207 bytes ==> POST http://localhost:8081/orders
-
-* 다시 요청이 쌓이기 시작하여 건당 처리시간이 610 밀리를 살짝 넘기기 시작 => 회로 열기 => 요청 실패처리
-
-HTTP/1.1 500     1.93 secs:     248 bytes ==> POST http://localhost:8081/orders    
-HTTP/1.1 500     1.92 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     1.93 secs:     248 bytes ==> POST http://localhost:8081/orders
-
-* 생각보다 빨리 상태 호전됨 - (건당 (쓰레드당) 처리시간이 610 밀리 미만으로 회복) => 요청 수락
-
-HTTP/1.1 201     2.24 secs:     207 bytes ==> POST http://localhost:8081/orders  
-HTTP/1.1 201     2.32 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.16 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.19 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.19 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.19 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.21 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.29 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.30 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.38 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.59 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.61 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.62 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     2.64 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.01 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.27 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.33 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.45 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.52 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.57 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.69 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.69 secs:     207 bytes ==> POST http://localhost:8081/orders
-
-* 이후 이러한 패턴이 계속 반복되면서 시스템은 도미노 현상이나 자원 소모의 폭주 없이 잘 운영됨
-
-
-HTTP/1.1 500     4.76 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.23 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.76 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.74 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.82 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.82 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.84 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.66 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     5.03 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.22 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.19 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.18 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.69 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.65 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     5.13 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.84 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.25 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.25 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.80 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.87 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.33 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.86 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.96 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.34 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 500     4.04 secs:     248 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.50 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.95 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.54 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     4.65 secs:     207 bytes ==> POST http://localhost:8081/orders
-
-
-:
-:
-
-Transactions:		        1025 hits
-Availability:		       63.55 %
-Elapsed time:		       59.78 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
-Successful transactions:        1025
-Failed transactions:	         588
-Longest transaction:	        9.20
-Shortest transaction:	        0.00
 
 ```
 - 운영시스템은 죽지 않고 지속적으로 CB 에 의하여 적절히 회로가 열림과 닫힘이 벌어지면서 자원을 보호하고 있음을 보여줌. 하지만, 63.55% 가 성공하였고, 46%가 실패했다는 것은 고객 사용성에 있어 좋지 않기 때문에 Retry 설정과 동적 Scale out (replica의 자동적 추가,HPA) 을 통하여 시스템을 확장 해주는 후속처리가 필요.
@@ -717,9 +595,9 @@ Shortest transaction:	        0.00
 앞서 CB 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. 
 
 
-- 결제서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다:
+- Admin Menu call에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 
 ```
-kubectl autoscale deploy pay --min=1 --max=10 --cpu-percent=15
+kubectl autoscale deploy t5-admin --min=1 --max=10 --cpu-percent=15
 ```
 - CB 에서 했던 방식대로 워크로드를 2분 동안 걸어준다.
 ```
@@ -727,7 +605,7 @@ siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081
 ```
 - 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다:
 ```
-kubectl get deploy pay -w
+kubectl get deploy t5-admin -w
 ```
 - 어느정도 시간이 흐른 후 (약 30초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
 ```
