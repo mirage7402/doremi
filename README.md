@@ -8,6 +8,28 @@ kubectl -n kafka exec my-kafka-0 -- /usr/bin/kafka-topics --zookeeper my-kafka-z
 kubectl -n kafka exec -ti my-kafka-0 -- /usr/bin/kafka-console-consumer --bootstrap-server my-kafka:9092 --topic ipTVShopProject --from-beginning
 kubectl -n kafka exec -ti my-kafka-1 -- /usr/bin/kafka-console-consumer --bootstrap-server my-kafka:9092 --topic ipTVShopProject
 
+# SIEGE 설치
+
+ 1) siege 설치
+ 
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: siege
+  namespace: default  
+spec:
+  containers:
+  - name: siege
+    image: apexacme/siege-nginx
+EOF
+
+ 2)siege가 설치된 POD에 들어가서 작업
+   kubectl exec -it siege --container siege -n default -- /bin/bash
+
+ 3) 부하발생 해보기
+   siege -c3 -t30S -v --content-type "application/json" 'http://ade05cb3a099a4cd2879ed9475f04e0b-1145656751.us-east-2.elb.amazonaws.com:8080/orders POST {"productId": "2030", "productName": "internet", "installationAddress": "Seoul", "customerId": "1", "orderDate": "20200715", "status": "JOINORDED"}'
+
 
 
 # (도레미 피자) Pizza매장 메뉴관리, 주문배송관리 서비스
