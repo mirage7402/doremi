@@ -11,7 +11,7 @@ kubectl -n kafka exec -ti my-kafka-1 -- /usr/bin/kafka-console-consumer --bootst
 # SIEGE 설치
 
  1) siege 설치
- 
+ ```
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Pod
@@ -23,7 +23,7 @@ spec:
   - name: siege
     image: apexacme/siege-nginx
 EOF
-
+```
  2)siege가 설치된 POD에 들어가서 작업
    kubectl exec -it siege --container siege -n default -- /bin/bash
 
